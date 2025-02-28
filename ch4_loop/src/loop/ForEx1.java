@@ -5,5 +5,6 @@ public class ForEx1 {
         for (int i = 0; i < 5; i++) {
             System.err.println();
         }
+        // for(;;){}
     }
 }

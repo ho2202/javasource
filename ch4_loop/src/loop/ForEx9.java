@@ -15,5 +15,6 @@ public class ForEx9 {
             }
             System.out.println();
         }
+        scanner.close();
     }
 }

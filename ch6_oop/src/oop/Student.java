@@ -26,7 +26,7 @@ public class Student {
     }
 
     void changeTel(String tel) {
-
+        this.phone = tel;
     }
 
     void changeGrade() {

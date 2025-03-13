@@ -1,0 +1,15 @@
+exception
+발생시점에 따른 분류
+1. 컴파일 에러 : 컴파일 때 발생하는 에러
+2. 런타임 에러 - (1) error : 메모리 부족, 스택오버플로우 (2) exception : 수습 가능
+
+exception : IOException, ClassNot.., RuntimeException -- ArithmeticException, NullPointerException
+
+try{
+    
+} catch(Exception e){
+
+}
+finally
+강제 예외 발생
+예외 전달

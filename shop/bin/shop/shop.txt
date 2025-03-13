@@ -1,0 +1,14 @@
+쇼핑물 프로그램
+상품 - Tv, smartphone
+TV - 해상도, 상품명, 가격, 인스턴스멤버 변수값 출력 메소드
+스마트폰 - 통신사, 상품명, 가격, 인스턴스멤버 변수값 출력 메소드
+
+Shop
+setTitle - 상점 이름
+genUser - 고객 생성
+genProduct - 상품 생성
+start - 상점 시작
+
+productList - 상품 선택
+cart - 장바구니에 담기
+checkOut - 담긴 상품 구매

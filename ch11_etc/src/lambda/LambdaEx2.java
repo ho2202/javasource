@@ -1,9 +1,12 @@
 package lambda;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
+import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.ObjDoubleConsumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class LambdaEx2 {
@@ -25,6 +28,24 @@ public class LambdaEx2 {
 
         IntSupplier intSupplier = () -> (int) (Math.random() * 6) + 1;
         System.out.println(intSupplier.getAsInt());
+
+        Predicate<String> predicate = (str) -> str.length() == 0;
+        if (predicate.test("")) {
+            System.out.println("빈 문자열");
+        }
+
+        Predicate<Integer> predicate1 = (i) -> i % 2 == 0;
+        if (predicate1.test(2)) {
+            System.out.println("짝수");
+        } else {
+            System.out.println("홀수");
+        }
+
+        Function<Integer, String> function = (i) -> String.valueOf(i);
+        System.out.println(function.apply(32));
+
+        BiFunction<Integer, Integer, Integer> f = (x, y) -> x + y;
+        System.out.println(f.apply(2, 4));
 
     }
 }

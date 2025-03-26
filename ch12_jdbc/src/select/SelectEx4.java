@@ -31,7 +31,7 @@ public class SelectEx4 {
 
                 String sql = "SELECT e.EMPNO, e.DEPTNO, e.SAL, d.DNAME, d.LOC \r\n" +
                         "FROM emp e, DEPT d \r\n" +
-                        "WHERE e.DEPTNO = d.DEPTNO AND e.SAL <= 2500 AND e.EMPNO <= 9900?"; // 물음표 자리에 무엇이 들어갈 것을 알려줌
+                        "WHERE e.DEPTNO = d.DEPTNO AND e.SAL <= 2500 AND e.EMPNO <= 9900"; // 물음표 자리에 무엇이 들어갈 것을 알려줌
                 pstnt = con.prepareStatement(sql);
                 // pstnt.setInt(1, empno);
                 rs = pstnt.executeQuery();
@@ -52,6 +52,7 @@ public class SelectEx4 {
             e.printStackTrace();
         } finally {
             try {
+                sc.close();
                 rs.close();
                 pstnt.close();
                 con.close();

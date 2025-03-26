@@ -53,6 +53,7 @@ public class SelectEx3 {
             e.printStackTrace();
         } finally {
             try {
+                sc.close();
                 rs.close();
                 pstnt.close();
                 con.close();

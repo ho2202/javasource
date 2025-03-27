@@ -1,5 +1,6 @@
 package emp;
 
+import java.util.List;
 // import java.text.ParseException;
 // import java.text.SimpleDateFormat;
 // import java.util.Date;
@@ -19,11 +20,12 @@ public class EmpMain {
             System.out.println("1. 입력");
             System.out.println("2. 수정");
             System.out.println("3. 삭제");
-            System.out.println("4. 조회");
-            System.out.println("5. 종료");
+            System.out.println("4. 전체 조회");
+            System.out.println("5. 특정 사원 조회");
+            System.out.println("6. 종료");
             System.out.println("==============================================");
 
-            System.out.println("메뉴 선택 >> ");
+            System.out.print("메뉴 선택 >> ");
             int menu = Integer.parseInt(sc.nextLine());
 
             switch (menu) {
@@ -43,8 +45,17 @@ public class EmpMain {
                     System.out.println(result > 0 ? "삭제 성공" : "삭제 실패");
                     break;
                 case 4:
+                    List<EmpDTO> list = eDao.selectALL();
+                    empPrint(list);
                     break;
                 case 5:
+                    empNo = getRow(sc);
+                    eDto = eDao.select(empNo);
+                    System.out.println(eDto);
+
+                    break;
+
+                case 6:
                     run = false;
                     break;
                 default:
@@ -52,6 +63,25 @@ public class EmpMain {
             }
         }
 
+    }
+
+    public static void empPrint(List<EmpDTO> list) {
+
+        System.out.println("================================================================");
+        System.out.println("사번\t 이름\t직무\t 매니저번호\t 입사일 \t급여 \t수당\t부서번호");
+        System.out.println("================================================================");
+
+        for (EmpDTO empDTO : list) {
+            System.out.printf("%d\t %s\t %s\t %d\t %s\t %d\t %d\t %d\n", empDTO.getEmpNo(), empDTO.getEname(),
+                    empDTO.getJob(), empDTO.getMgr(), empDTO.getHirDate(), empDTO.getSal(), empDTO.getComm(),
+                    empDTO.getDeptNo());
+        }
+    }
+
+    public static int getRow(Scanner sc) {
+        System.out.println("조회할 사번 >> ");
+        int empNo = Integer.parseInt(sc.nextLine());
+        return empNo;
     }
 
     public static int deleteInfo(Scanner sc) {
@@ -97,7 +127,8 @@ public class EmpMain {
         // e.printStackTrace();
         // }
 
-        EmpDTO eDto = EmpDTO.builder().empNo(empNo).ename(ename).job(job).mgr(mgr).hirDate(date).sal(sal).comm(comm)
+        EmpDTO eDto = EmpDTO.builder().empNo(empNo).ename(ename).job(job).mgr(mgr).hirDate(date).sal(sal)
+                .comm(comm)
                 .deptNo(deptNo).build();
 
         return eDto;

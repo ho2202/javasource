@@ -1,4 +1,4 @@
-package emp;
+package member;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmpDAO {
+public class MemberDAO {
     private Connection con = null;
     private PreparedStatement pstnt = null;
     private ResultSet rs = null;
@@ -35,56 +35,40 @@ public class EmpDAO {
         return con;
     }
 
-    public EmpDTO select(int empNo) {
+    public MemberDTO select(int id) {
         con = getConnection();
-        String sql = "select * from emp_temp where empno=?";
-        EmpDTO eDto = null;
+        String sql = "select * from member where id=?";
+        MemberDTO dto = null;
         try {
             pstnt = con.prepareStatement(sql);
-            pstnt.setInt(1, empNo);
+            pstnt.setInt(1, id);
             rs = pstnt.executeQuery();
             // 결과 옮기기
             if (rs.next()) {
-                eDto = new EmpDTO();
-                eDto.setEmpNo(rs.getInt("empno"));
-                eDto.setDeptNo(rs.getInt("deptno"));
-                eDto.setEname(rs.getString("ename"));
-                eDto.setHirDate(rs.getString("hiredate"));
-                eDto.setJob(rs.getString("job"));
-                eDto.setSal(rs.getInt("sal"));
-                eDto.setComm(rs.getInt("comm"));
-                eDto.setMgr(rs.getInt("mgr"));
-
+                dto = new MemberDTO();
             }
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             close(con, pstnt, rs);
         }
-        return eDto;
+        return dto;
     }
 
-    public List<EmpDTO> selectALL() {
+    public List<MemberDTO> selectALL() {
         con = getConnection();
-        String sql = "select * from emp_temp";
-        List<EmpDTO> list = new ArrayList<>();
+        String sql = "select * from member";
+        List<MemberDTO> list = new ArrayList<>();
 
-        EmpDTO eDto = null;
+        MemberDTO dto = null;
         try {
             pstnt = con.prepareStatement(sql);
             rs = pstnt.executeQuery();
             // 결과 옮기기
             while (rs.next()) {
-                eDto = new EmpDTO();
-                eDto.setEmpNo(rs.getInt("empno"));
-                eDto.setDeptNo(rs.getInt("deptno"));
-                eDto.setEname(rs.getString("ename"));
-                eDto.setHirDate(rs.getString("hiredate"));
-                eDto.setJob(rs.getString("job"));
-                eDto.setSal(rs.getInt("sal"));
-                eDto.setComm(rs.getInt("comm"));
-                eDto.setMgr(rs.getInt("mgr"));
-                list.add(eDto);
+                dto = new MemberDTO();
+
+                list.add(dto);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -94,20 +78,17 @@ public class EmpDAO {
         return list;
     }
 
-    public int insert(EmpDTO eDto) {
-        con = getConnection();
+    public int insert(MemberDTO dto) {
         int result = 0;
-        String sql = "insert into emp_temp(EMPNO, ENAME, JOB, MGR ,HIREDATE, SAL ,COMM, DEPTNO) values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into member(id, name, addr, email, age) values(?,?,?,?,?)";
         try {
+            con = getConnection();
             pstnt = con.prepareStatement(sql);
-            pstnt.setInt(1, eDto.getEmpNo());
-            pstnt.setString(2, eDto.getEname());
-            pstnt.setString(3, eDto.getJob());
-            pstnt.setInt(4, eDto.getMgr());
-            pstnt.setString(5, eDto.getHirDate());
-            pstnt.setInt(6, eDto.getSal());
-            pstnt.setInt(7, eDto.getComm());
-            pstnt.setInt(8, eDto.getDeptNo());
+            pstnt.setString(1, dto.getId());
+            pstnt.setString(2, dto.getName());
+            pstnt.setString(3, dto.getAddr());
+            pstnt.setString(4, dto.getEmail());
+            pstnt.setInt(5, dto.getAge());
             result = pstnt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -117,14 +98,22 @@ public class EmpDAO {
         return result;
     }
 
-    public int update(EmpDTO eDto) {
-        con = getConnection();
+    public int update(MemberDTO dto) {
         int result = 0;
-        String sql = "update emp_temp set sal=? where empno=?";
         try {
-            pstnt = con.prepareStatement(sql);
-            pstnt.setInt(1, eDto.getSal());
-            pstnt.setInt(2, eDto.getEmpNo());
+            con = getConnection();
+            String sql = "update member ";
+            if (dto.getAddr() != null) {
+                sql = "set addr=? where id=?";
+                pstnt = con.prepareStatement(sql);
+                pstnt.setString(1, dto.getAddr());
+
+            } else {
+                sql += "set email=? where id=?";
+                pstnt = con.prepareStatement(sql);
+                pstnt.setString(1, dto.getEmail());
+            }
+            pstnt.setString(2, dto.getId());
             result = pstnt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -134,13 +123,14 @@ public class EmpDAO {
         return result;
     }
 
-    public int delete(int empNo) {
+    public int delete(MemberDTO dto) {
         con = getConnection();
         int result = 0;
-        String sql = "delete from emp_temp where empNo =?";
+        String sql = "delete from member where id =? and email =?";
         try {
             pstnt = con.prepareStatement(sql);
-            pstnt.setInt(1, empNo);
+            pstnt.setString(1, dto.getId());
+            pstnt.setString(2, dto.getEmail());
             result = pstnt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();

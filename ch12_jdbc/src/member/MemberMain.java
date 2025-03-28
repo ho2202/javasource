@@ -25,37 +25,52 @@ public class MemberMain {
             System.out.print("메뉴 선택 >> ");
 
             int menu = Integer.parseInt(sc.nextLine());
-
+            String input = "";
             switch (menu) {
                 case 1:
-                    dto = util.MemberInsertInto(sc);
+                    dto = util.memberInsertInto(sc);
                     result = dao.insert(dto);
                     util.printSuccessMessage(result);
                     break;
                 case 2:
-                    dto = util.MemberUpdateMenu(sc);
+                    dto = util.memberUpdateMenu(sc);
                     if (dto != null) {
                         result = dao.update(dto);
                         util.printUpdateSuccessMessage(result, dto.getId());
                     }
                     break;
                 case 3:
-                    dto = util.MemberDelete(sc);
-                    if (dto != null) {
-                        result = dao.delete(dto);
-                        util.printDeleteSuccessMessage(result, dto.getId());
+                    input = util.memberDelete(sc);
+                    if (input != null) {
+                        result = dao.delete(input);
+                        util.printDeleteSuccessMessage(result, input);
                     }
                     break;
                 case 4:
-                    String id = util.MemberSelect(sc);
-                    if (id != null) {
-                        // result = dao.select(id);
+                    input = util.memberSelect(sc);
+                    if (input.matches("^[A-Za-z].*")) {
+                        // 아이디
+                        MemberDTO resultRow = dao.selectRow(input);
+                        if (resultRow != null) {
+                            util.printRow(resultRow);
+                        }
+                    } else {
+                        // 이름
+                        List<MemberDTO> list = dao.selectList(input);
+                        if (!list.isEmpty()) {
+                            util.printDTOAll(list);
+                        }
                     }
+
                     break;
                 case 5:
-                    List<MemberDTO> dtoList = dao.selectALL();
+                    List<MemberDTO> dtoList = dao.getALL();
+                    if (dtoList != null) {
+                        util.printDTOAll(dtoList);
+                    } else {
+                        System.out.println("데이터 없음");
+                    }
                     break;
-
                 case 6:
                     run = false;
                     break;

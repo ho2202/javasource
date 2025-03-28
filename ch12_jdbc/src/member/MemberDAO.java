@@ -35,17 +35,24 @@ public class MemberDAO {
         return con;
     }
 
-    public MemberDTO select(int id) {
-        con = getConnection();
+    public MemberDTO selectRow(String id) {
         String sql = "select * from member where id=?";
         MemberDTO dto = null;
         try {
+            con = getConnection();
             pstnt = con.prepareStatement(sql);
-            pstnt.setInt(1, id);
+            pstnt.setString(1, id);
             rs = pstnt.executeQuery();
             // 결과 옮기기
             if (rs.next()) {
-                dto = new MemberDTO();
+                dto = new MemberDTO(rs.getInt(1), rs.getString("id"), rs.getString("name"), rs.getString("addr"),
+                        rs.getString("email"), rs.getInt("age"), null);
+
+                // dto.setAddr(rs.getString("addr"));
+                // dto.setAge(rs.getInt("age"));
+                // dto.setEmail(rs.getString("email"));
+                // dto.setName(rs.getString("name"));
+                // dto.setId(id);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -55,19 +62,41 @@ public class MemberDAO {
         return dto;
     }
 
-    public List<MemberDTO> selectALL() {
-        con = getConnection();
-        String sql = "select * from member";
-        List<MemberDTO> list = new ArrayList<>();
-
+    public List<MemberDTO> selectList(String name) {
         MemberDTO dto = null;
+        List<MemberDTO> list = new ArrayList<>();
         try {
+            con = getConnection();
+            String sql = "select * from member where name like ?";
+            pstnt = con.prepareStatement(sql);
+            pstnt.setString(1, "%" + name + "%");
+            rs = pstnt.executeQuery();
+            // 결과 옮기기
+            while (rs.next()) {
+                dto = new MemberDTO(rs.getInt(1), rs.getString("id"), rs.getString("name"), rs.getString("addr"),
+                        rs.getString("email"), rs.getInt("age"), null);
+                list.add(dto);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(con, pstnt, rs);
+        }
+        return list;
+    }
+
+    public List<MemberDTO> getALL() {
+        MemberDTO dto = null;
+        List<MemberDTO> list = new ArrayList<>();
+        try {
+            con = getConnection();
+            String sql = "select * from member";
             pstnt = con.prepareStatement(sql);
             rs = pstnt.executeQuery();
             // 결과 옮기기
             while (rs.next()) {
-                dto = new MemberDTO();
-
+                dto = new MemberDTO(rs.getInt(1), rs.getString("id"), rs.getString("name"), rs.getString("addr"),
+                        rs.getString("email"), rs.getInt("age"), null);
                 list.add(dto);
             }
         } catch (SQLException e) {
@@ -80,8 +109,8 @@ public class MemberDAO {
 
     public int insert(MemberDTO dto) {
         int result = 0;
-        String sql = "insert into member(id, name, addr, email, age) values(?,?,?,?,?)";
         try {
+            String sql = "insert into member(no, id, name, addr, email, age) values(member_seq.nextval,?,?,?,?,?)";
             con = getConnection();
             pstnt = con.prepareStatement(sql);
             pstnt.setString(1, dto.getId());
@@ -123,14 +152,13 @@ public class MemberDAO {
         return result;
     }
 
-    public int delete(MemberDTO dto) {
-        con = getConnection();
+    public int delete(String id) {
         int result = 0;
-        String sql = "delete from member where id =? and email =?";
         try {
+            con = getConnection();
+            String sql = "delete from member where id =?";
             pstnt = con.prepareStatement(sql);
-            pstnt.setString(1, dto.getId());
-            pstnt.setString(2, dto.getEmail());
+            pstnt.setString(1, id);
             result = pstnt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -159,4 +187,5 @@ public class MemberDAO {
             e.printStackTrace();
         }
     }
+
 }
